@@ -13,6 +13,8 @@ def get_zero(int_part):
 
 
 def format_fraction_part(fraction_part_str):
+    if fraction_part_str == "":
+        return ""
     fraction_part = int(fraction_part_str)
     if fraction_part != 0:
         nice_fraction_part = "." + "0" * (len(fraction_part_str) -
@@ -25,6 +27,20 @@ def format_fraction_part(fraction_part_str):
         return ""
 
 
+def format_int_part(int_part):
+    nice_int_part = ""
+    if int_part == 0:
+        nice_int_part = "0"
+
+    while int_part != 0:
+        nice_int_part = (get_zero(int_part)
+                         + str(int_part % 1000)
+                         + nice_int_part)
+        int_part //= 1000
+
+    return nice_int_part
+
+
 def format_price(price):
     if not isinstance(price, str):
         return None
@@ -33,22 +49,17 @@ def format_price(price):
     except ValueError:
         return None
 
-    nice_price = ""
     parts_price = price.split(".")
     if parts_price[0] != "":
         int_part = int(parts_price[0])
     else:
         int_part = 0
 
+    nice_price = format_int_part(int_part)
+
     if len(parts_price) == 2 or price[0] == ".":
         nice_price += format_fraction_part(parts_price[-1])
 
-    if int_part == 0:
-        nice_price = "0" + nice_price
-
-    while int_part != 0:
-        nice_price = get_zero(int_part) + str(int_part % 1000) + nice_price
-        int_part //= 1000
     return nice_price
 
 
