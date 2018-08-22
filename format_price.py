@@ -41,14 +41,7 @@ def format_int_part(int_part):
     return nice_int_part
 
 
-def format_price(price):
-    if not isinstance(price, str):
-        return None
-    try:
-        float(price)
-    except ValueError:
-        return None
-
+def format_price_str(price):
     parts_price = price.split(".")
     if parts_price[0] != "":
         int_part = int(parts_price[0])
@@ -60,6 +53,27 @@ def format_price(price):
     if len(parts_price) == 2 or price[0] == ".":
         nice_price += format_fraction_part(parts_price[-1])
 
+    return nice_price
+
+
+def format_price(price):
+    nice_price = None
+    if isinstance(price, bool):
+        pass
+    elif isinstance(price, str):
+        try:
+            float(price)
+        except ValueError:
+            return None
+        nice_price = format_price_str(price)
+    elif isinstance(price, bytes):
+        nice_price = format_price(price.decode("utf-8"))
+    elif isinstance(price, int):
+        nice_price = format_int_part(price)
+    elif isinstance(price, float):
+        nice_price = format_price_str(str(price))
+    elif isinstance(price, list):
+        nice_price = [format_price(one_price) for one_price in price]
     return nice_price
 
 
